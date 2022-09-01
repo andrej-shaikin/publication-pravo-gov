@@ -1,0 +1,11 @@
+fastapi-sqlalchemy
+fastapi
+sqlalchemy
+asyncpg
+alembic
+
+uvicorn
+gunicorn
+
+httpx
+python-environ
