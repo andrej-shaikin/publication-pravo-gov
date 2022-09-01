@@ -10,3 +10,4 @@ gunicorn
 
 httpx
 python-environ
+celery

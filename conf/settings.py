@@ -3,6 +3,7 @@ from environ import Env
 env = Env()
 env.read_env()
 
+SYSTEM_CODENAME = env.str("SYSTEM_CODENAME", default="publication_pravo_gov")
 DATABASE_DSN = env.str("DATABASE_DSN")
 DEBUG = env.bool("DEBUG", default=False)
 TIMEZONE = "UTC"

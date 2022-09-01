@@ -9,18 +9,35 @@
 
 alembic==1.8.1
     # via -r requirements/main.in
+amqp==5.1.1
+    # via kombu
 anyio==3.6.1
     # via
     #   httpcore
     #   starlette
 asyncpg==0.26.0
     # via -r requirements/main.in
+billiard==3.6.4.0
+    # via celery
+celery==5.2.7
+    # via -r requirements/main.in
 certifi==2022.6.15
     # via
     #   httpcore
     #   httpx
 click==8.1.3
-    # via uvicorn
+    # via
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
+    #   uvicorn
+click-didyoumean==0.3.0
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.2.0
+    # via celery
 colorama==0.4.5
     # via click
 fastapi==0.81.0
@@ -43,16 +60,24 @@ idna==3.3
     # via
     #   anyio
     #   rfc3986
+kombu==5.2.4
+    # via celery
 mako==1.2.2
     # via alembic
 markupsafe==2.1.1
     # via mako
+prompt-toolkit==3.0.30
+    # via click-repl
 pydantic==1.10.1
     # via fastapi
 python-environ==0.4.54
     # via -r requirements/main.in
+pytz==2022.2.1
+    # via celery
 rfc3986[idna2008]==1.5.0
     # via httpx
+six==1.16.0
+    # via click-repl
 sniffio==1.2.0
     # via
     #   anyio
@@ -74,6 +99,13 @@ typing-extensions==4.3.0
     # via pydantic
 uvicorn==0.18.3
     # via -r requirements/main.in
+vine==5.0.0
+    # via
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.2.5
+    # via prompt-toolkit
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
