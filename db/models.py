@@ -1,6 +1,6 @@
-import uuid
 from datetime import datetime
 
+import uuid
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,15 +19,12 @@ class BaseModel(_Base):
         autoincrement=True,
         nullable=False,
     )
-    is_active: bool = Column(type_=Boolean, default=True, comment="Активен")
-    uuid: uuid.UUID = Column(type_=UUID(as_uuid=True), default=uuid.uuid4, comment="Уникальный идентификатор")
-    created_at: datetime = Column(type_=DateTime(timezone=True), default=datetime.utcnow, comment="Дата создания")
+    is_active: bool = Column(Boolean, default=True, comment="Активен")
+    uuid = Column(UUID(as_uuid=True), default=uuid.uuid4, comment="Уникальный идентификатор")
+    created_at: datetime = Column(DateTime(timezone=True), default=datetime.utcnow, comment="Дата создания")
     updated_at: datetime = Column(
-        type_=DateTime(timezone=True),
+        DateTime(timezone=True),
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
         comment="Дата последнего изменения",
     )
-
-
-__all__ = ["BaseModel"]

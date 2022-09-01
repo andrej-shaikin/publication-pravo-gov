@@ -3,6 +3,7 @@ fastapi
 sqlalchemy
 asyncpg
 alembic
+SQLAlchemy-Utils
 
 uvicorn
 gunicorn
