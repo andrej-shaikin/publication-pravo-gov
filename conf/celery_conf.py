@@ -19,6 +19,6 @@ app.autodiscover_tasks(
     packages=[
       "apps.document_types.tasks",
       "apps.section.tasks",
-      "apps.signatory_authority",
+      "apps.signatory_authority.tasks",
     ]
 )

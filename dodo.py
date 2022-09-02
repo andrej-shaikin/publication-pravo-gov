@@ -4,24 +4,14 @@ from doit.tools import CmdAction, LongRunning
 def task_pip_compile():
     return {
       "actions": [
-        CmdAction(
-            "pip-compile -o requirements/main.txt requirements/main.in"
-        ),
-        CmdAction(
-            "pip-compile -o requirements/dev.txt requirements/dev.in"
-        ),
+        CmdAction("pip-compile -o requirements/main.txt requirements/main.in"),
+        CmdAction("pip-compile -o requirements/dev.txt requirements/dev.in"),
       ]
     }
 
 
-def task_pip_sync():
-    return {
-      "actions": [
-        CmdAction(
-            "pip-sync requirements/main.txt requirements/dev.txt"
-        ),
-      ]
-    }
+def task_pip_install():
+    return {"actions": [CmdAction("pip install -r requirements/main.txt -r requirements/dev.txt")]}
 
 
 def task_celery_beat():

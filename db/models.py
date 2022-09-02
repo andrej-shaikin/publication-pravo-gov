@@ -1,9 +1,11 @@
+import uuid
 from datetime import datetime
 
-import uuid
+from fastapi_sqlalchemy import db
 from sqlalchemy import Boolean, Column, DateTime, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session
 
 _Base = declarative_base()
 
@@ -28,3 +30,5 @@ class BaseModel(_Base):
         onupdate=datetime.utcnow,
         comment="Дата последнего изменения",
     )
+
+    objects = scoped_session(db.session)

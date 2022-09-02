@@ -15,8 +15,6 @@ anyio==3.6.1
     # via
     #   httpcore
     #   starlette
-asyncpg==0.26.0
-    # via -r requirements/main.in
 billiard==3.6.4.0
     # via celery
 celery==5.2.7
@@ -68,6 +66,8 @@ markupsafe==2.1.1
     # via mako
 prompt-toolkit==3.0.30
     # via click-repl
+psycopg2==2.9.3
+    # via -r requirements/main.in
 pydantic==1.10.1
     # via fastapi
 python-environ==0.4.54

@@ -1,7 +1,7 @@
 fastapi-sqlalchemy
 fastapi
 sqlalchemy
-asyncpg
+psycopg2
 alembic
 SQLAlchemy-Utils
 
