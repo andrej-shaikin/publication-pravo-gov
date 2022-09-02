@@ -3,7 +3,7 @@ fastapi
 sqlalchemy
 psycopg2
 alembic
-SQLAlchemy-Utils
+sqlalchemy_get_or_create
 
 uvicorn
 gunicorn

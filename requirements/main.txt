@@ -88,8 +88,8 @@ sqlalchemy==1.4.40
     #   -r requirements/main.in
     #   alembic
     #   fastapi-sqlalchemy
-    #   sqlalchemy-utils
-sqlalchemy-utils==0.38.3
+    #   sqlalchemy-get-or-create
+sqlalchemy-get-or-create==0.1.5
     # via -r requirements/main.in
 starlette==0.19.1
     # via
