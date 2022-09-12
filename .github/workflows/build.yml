@@ -1,0 +1,20 @@
+name: Build
+
+# Sets the events which will trigger the Action
+# `push` = any "push" action to the GitHub "remote",
+# changes to any branch will be considered
+on: [ push, pull_request ]
+
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: Dockerfile
+          push: false
+          target: runner
