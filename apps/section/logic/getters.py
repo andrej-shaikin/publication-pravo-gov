@@ -1,10 +1,12 @@
+from logging import getLogger
 from typing import Iterable
 
 import httpx
+from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
 from pydantic import BaseModel, constr
 from starlette import status
 
-from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
+logger = getLogger(__name__)
 
 
 class _NpaSection(BaseModel):
@@ -14,11 +16,13 @@ class _NpaSection(BaseModel):
     is_agencies_of_state_authorities: bool
 
 
-async def get_npa_sections_from_source() -> Iterable[_NpaSection]:
+async def get_npa_sections_from_source() -> Iterable[_NpaSection] | None:
     """Получение блоков НПА из источника http://publication.pravo.gov.ru/"""
     async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
         resp = await client.get("http://publication.pravo.gov.ru/api/PublicBlock/Get")
-        assert resp.status_code == status.HTTP_200_OK
+        if resp.status_code != status.HTTP_200_OK:
+            logger.exception(resp.text)
+            return
         return (
             _NpaSection(
                 code=item["Code"],

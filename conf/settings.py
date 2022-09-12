@@ -6,7 +6,7 @@ env = Env()
 env.read_env()
 
 SYSTEM_CODENAME = env.str("SYSTEM_CODENAME", default="publication_pravo_gov")
-DATABASE_DSN = env.str("DATABASE_DSN")
+DATABASE_DSN = env.str("DATABASE_DSN", default="postgresql://postgres:12345@localhost:5432/asyncalchemy")
 DEBUG = env.bool("DEBUG", default=False)
 TIMEZONE = "UTC"
 

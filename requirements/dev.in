@@ -4,8 +4,6 @@ doit
 pip-tools
 pip
 
-
-django-silk
 doit
 
 safety

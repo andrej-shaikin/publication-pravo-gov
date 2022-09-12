@@ -1,11 +1,13 @@
+from logging import getLogger
 from typing import Iterable
 from uuid import UUID
 
 import httpx
+from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
 from pydantic import BaseModel, constr
 from starlette import status
 
-from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
+logger = getLogger(__name__)
 
 
 class _DocumentTypeDto(BaseModel):
@@ -13,9 +15,11 @@ class _DocumentTypeDto(BaseModel):
     name: constr(max_length=512, min_length=1, strip_whitespace=True)
 
 
-async def get_document_types_from_source() -> Iterable[_DocumentTypeDto]:
+async def get_document_types_from_source() -> Iterable[_DocumentTypeDto] | None:
     """Получение типов докуемнтов из источника http://publication.pravo.gov.ru/"""
     async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
         resp = await client.get("http://publication.pravo.gov.ru/api/DocumentType/Get")
-        assert resp.status_code == status.HTTP_200_OK
+        if resp.status_code != status.HTTP_200_OK:
+            logger.exception(resp.text)
+            return
         return (_DocumentTypeDto(uuid=item["Id"], name=item["Name"]) for item in resp.json())
