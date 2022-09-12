@@ -12,6 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - uses: docker/build-push-action@v3
       - name: Build Image
-        uses: docker/build-push-action@v3
         run: docker build -f ./Dockerfile .
