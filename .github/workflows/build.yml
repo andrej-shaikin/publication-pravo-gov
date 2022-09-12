@@ -14,9 +14,4 @@ jobs:
     steps:
       - name: Build Image
         uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          target: runner
-          script_stop: true
+        run: docker build -f ./Dockerfile .
