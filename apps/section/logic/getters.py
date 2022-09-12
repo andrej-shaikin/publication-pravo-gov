@@ -1,12 +1,17 @@
+from datetime import date, datetime
 from logging import getLogger
 from typing import Iterable
+from uuid import UUID
 
 import httpx
+from fastapi_utils.files import NamedBytesIO
 from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
 from pydantic import BaseModel, constr
 from starlette import status
 
+from apps.document_types.logic.getters import _DocumentTypeDto
 from apps.section.models import NpaSection
+from apps.signatory_authority.logic.getters import _SignatoryAuthorityDto
 
 logger = getLogger(__name__)
 
@@ -66,3 +71,92 @@ async def get_npa_section_subsection_from_source(npa_section: NpaSection) -> Ite
             )
             for item in resp.json()
         )
+
+
+async def get_npa_document_source_url(eo_number: str) -> str | None:
+    """получени ссылки на страницу с документа на сайте publication.pravo.gov.ru"""
+    url = f"http://publication.pravo.gov.ru/Document/View/{eo_number}"
+    async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
+        resp = await client.get(url)
+        if resp.status_code != status.HTTP_200_OK:
+            logger.exception(resp.text)
+            return
+        return url
+
+
+async def get_npa_document_content(eo_number: str) -> NamedBytesIO | None:
+    """получени содержимого документа с сайта publication.pravo.gov.ru"""
+    async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
+        resp = await client.get(f"http://publication.pravo.gov.ru/File/GetFile/{eo_number}")
+        if resp.status_code != status.HTTP_200_OK:
+            logger.exception(resp.text)
+            return
+        return NamedBytesIO(resp.content, name=f"{eo_number}.pdf")
+
+
+class _NpaDocumentDto(BaseModel):
+    uuid: UUID
+    eo_number: constr(max_length=16, strip_whitespace=True)
+    number: constr(max_length=128, strip_whitespace=True)
+    complex_name: constr(max_length=512, strip_whitespace=True)
+    name: constr(max_length=512, strip_whitespace=True)
+    document_date: date
+    has_pdf: bool
+    publish_date_short: datetime
+    document_type: _DocumentTypeDto
+    signatory_authority: _SignatoryAuthorityDto
+
+
+async def get_npa_documents_from_source():
+    """получение списка НПА из источника"""
+    async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
+        resp = await client.get(f"http://publication.pravo.gov.ru/api/Document/Get?RangeSize=200")
+        if resp.status_code != status.HTTP_200_OK:
+            logger.exception(resp.text)
+            return
+
+        data = resp.json()
+        async for document in data["Documents"]:
+            yield _NpaDocumentDto(
+                complex_name=document["ComplexName"],
+                name=document["Name"],
+                uuid=document["Id"],
+                eo_number=document["EoNumber"],
+                number=document["Number"],
+                document_date=document["DocumentData"],
+                has_pdf=document["HasPdf"],
+                publish_date_short=document["PublishDateShort"],
+                document_type=_DocumentTypeDto(uuid=document['DocumentTypeId'], name=document["DocumentTypeName"]),
+                signatory_authority=_SignatoryAuthorityDto(
+                    uuid=document["SignatoryAuthorityId"],
+                    name=document["SignatoryAuthorityName"],
+                )
+            )
+        page_number = data["MaxPageNumber"] + 1
+        while page_number > 1:
+            resp = await client.get(
+                f"http://publication.pravo.gov.ru/api/Document/Get?RangeSize=200&CurrentPageNumber={page_number}"
+            )
+            if resp.status_code != status.HTTP_200_OK:
+                logger.exception(resp.text)
+                return
+            data = resp.json()
+            async for document in data["Documents"]:
+                yield _NpaDocumentDto(
+                    complex_name=document["ComplexName"],
+                    name=document["Name"],
+                    uuid=document["Id"],
+                    eo_number=document["EoNumber"],
+                    number=document["Number"],
+                    document_date=document["DocumentData"],
+                    has_pdf=document["HasPdf"],
+                    publish_date_short=document["PublishDateShort"],
+                    document_type=_DocumentTypeDto(uuid=document['DocumentTypeId'],
+                                                   name=document["DocumentTypeName"]),
+                    signatory_authority=_SignatoryAuthorityDto(
+                        uuid=document["SignatoryAuthorityId"],
+                        name=document["SignatoryAuthorityName"],
+                    )
+                )
+            page_number -= 1
+    a = 5

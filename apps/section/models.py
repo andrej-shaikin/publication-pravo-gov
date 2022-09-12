@@ -1,6 +1,10 @@
-import ormar
+from datetime import date, datetime
 
+import ormar
 from fastapi_utils.db.models import BaseModel, BaseModelMeta
+
+from apps.document_types.models import DocumentType
+from apps.signatory_authority.models import SignatoryAuthority
 
 
 class NpaSection(BaseModel):
@@ -37,3 +41,26 @@ class NpaSubSection(BaseModel):
 
     def __repr__(self) -> str:
         return self.name
+
+
+class NpaDocument(BaseModel):
+    complex_name: str = ormar.String(max_length=512, unique=True)
+    name: str = ormar.String(max_length=512, unique=True)
+    document_date: date = ormar.Date(nullable=False)
+    publish_date_short: datetime = ormar.DateTime(nullable=False)
+    document_type: DocumentType = ormar.ForeignKey(DocumentType, nullable=False, skip_reverse=False)
+    eo_number: str = ormar.String(max_length=16)
+    has_pdf: bool = ormar.Boolean()
+    number: str = ormar.String(max_length=128)
+    signatory_authority: SignatoryAuthority = ormar.ForeignKey(
+        SignatoryAuthority,
+        related_name="npa_documents",
+        index=True,
+        nullable=False,
+    )
+
+    class Meta(BaseModelMeta):
+        tablename = "npa_documents"
+
+    def __repr__(self) -> str:
+        return f"№{self.eo_number}: {self.complex_name}"

@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements/main.txt requirements/main.in
 #
--e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.6#egg=fastapi-utils
+-e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.8#egg=fastapi-utils
     # via -r requirements/main.in
 alembic==1.8.1
     # via -r requirements/main.in
