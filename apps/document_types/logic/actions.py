@@ -1,9 +1,5 @@
-from fastapi import APIRouter
-
 from apps.document_types.logic.getters import get_document_types_from_source
 from apps.document_types.models import DocumentType
-
-router = APIRouter()
 
 
 async def refresh_document_types_from_source() -> None:
