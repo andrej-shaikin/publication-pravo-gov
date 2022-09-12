@@ -8,5 +8,6 @@ httpx
 python-environ
 celery
 databases
+python-dateutil
 
 -e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.6#egg=fastapi-utils

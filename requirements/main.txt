@@ -87,6 +87,8 @@ pydantic==1.10.1
     #   ormar
 pyparsing==3.0.9
     # via packaging
+python-dateutil==2.8.2
+    # via -r requirements/main.in
 python-dotenv==0.21.0
     # via environs
 python-environ==0.4.54
@@ -96,7 +98,9 @@ pytz==2022.2.1
 rfc3986[idna2008]==1.5.0
     # via httpx
 six==1.16.0
-    # via click-repl
+    # via
+    #   click-repl
+    #   python-dateutil
 sniffio==1.2.0
     # via
     #   anyio
