@@ -9,4 +9,4 @@ python-environ
 celery
 databases
 
--e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.4#egg=fastapi-utils
+-e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.6#egg=fastapi-utils
