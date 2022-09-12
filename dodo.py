@@ -3,15 +3,19 @@ from doit.tools import CmdAction, LongRunning
 
 def task_pip_compile():
     return {
-      "actions": [
-        CmdAction("pip-compile -o requirements/main.txt requirements/main.in"),
-        CmdAction("pip-compile -o requirements/dev.txt requirements/dev.in"),
-      ]
+        "file_dep": ["requirements/main.in", "requirements/dev.in"],
+        "actions": [
+            CmdAction("pip-compile -o requirements/main.txt requirements/main.in"),
+            CmdAction("pip-compile -o requirements/dev.txt requirements/dev.in"),
+        ]
     }
 
 
-def task_pip_install():
-    return {"actions": [CmdAction("pip install -r requirements/main.txt -r requirements/dev.txt")]}
+def task_pip_sync():
+    return {
+        "file_dep": ["requirements/main.txt", "requirements/dev.txt"],
+        "actions": [CmdAction("pip-sync requirements/main.txt requirements/dev.txt")]
+    }
 
 
 def task_celery_beat():
@@ -27,9 +31,8 @@ def task_celery_flower():
 
 
 __all__ = [
-  "task_pip_sync",
-  "task_pip_compile",
-  "task_celery_beat",
-  "task_celery_worker",
-  "task_celery_flower",
+    "task_pip_compile",
+    "task_celery_beat",
+    "task_celery_worker",
+    "task_celery_flower",
 ]

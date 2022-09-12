@@ -4,34 +4,30 @@
 #
 #    pip-compile --output-file=requirements/dev.txt requirements/dev.in
 #
---index-url http://pypi.ksb-dev/simple/
---trusted-host pypi.ksb-dev
-
 build==0.8.0
     # via pip-tools
 click==8.1.3
     # via
-    #   -c requirements\main.txt
+    #   -c requirements/main.txt
     #   pip-tools
 cloudpickle==2.1.0
     # via doit
-colorama==0.4.5
-    # via
-    #   -c requirements\main.txt
-    #   build
-    #   click
 doit==0.36.0
     # via -r requirements/dev.in
 importlib-metadata==4.12.0
     # via doit
 packaging==21.3
-    # via build
+    # via
+    #   -c requirements/main.txt
+    #   build
 pep517==0.13.0
     # via build
 pip-tools==6.8.0
     # via -r requirements/dev.in
 pyparsing==3.0.9
-    # via packaging
+    # via
+    #   -c requirements/main.txt
+    #   packaging
 tomli==2.0.1
     # via
     #   build

@@ -4,7 +4,7 @@ import httpx
 from pydantic import BaseModel, constr
 from starlette import status
 
-from utils.request import get_httpx_request_proxies
+from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
 
 
 class _NpaSection(BaseModel):
@@ -20,11 +20,11 @@ async def get_npa_sections_from_source() -> Iterable[_NpaSection]:
         resp = await client.get("http://publication.pravo.gov.ru/api/PublicBlock/Get")
         assert resp.status_code == status.HTTP_200_OK
         return (
-          _NpaSection(
-              code=item["Code"],
-              name=item["Name"],
-              description=item["Description"],
-              is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
-          )
-          for item in resp.json()
+            _NpaSection(
+                code=item["Code"],
+                name=item["Name"],
+                description=item["Description"],
+                is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
+            )
+            for item in resp.json()
         )

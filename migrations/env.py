@@ -3,10 +3,11 @@ from logging import getLogger
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from fastapi_utils.db.models import BaseModelMeta
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
 
 from conf import settings
-from db.models import _Base
 
 logger = getLogger(__name__)
 
@@ -26,11 +27,8 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_DSN)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = _Base.metadata
+target_metadata = BaseModelMeta.metadata
 
 
 # other values from the config, defined by the needs of env.py,

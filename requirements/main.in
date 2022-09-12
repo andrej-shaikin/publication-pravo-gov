@@ -1,13 +1,12 @@
-fastapi-sqlalchemy
 fastapi
-sqlalchemy
-psycopg2
+environs
+ormar[postgresql]
 alembic
-sqlalchemy_get_or_create
-
 uvicorn
 gunicorn
-
 httpx
 python-environ
 celery
+databases
+
+-e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.4#egg=fastapi-utils

@@ -1,3 +1,5 @@
+import databases
+import sqlalchemy
 from environ import Env
 
 env = Env()
@@ -11,8 +13,11 @@ TIMEZONE = "UTC"
 HTTP_PROXY = env.str("HTTP_PROXY", default="")
 HTTPS_PROXY = env.str("HTTPS_PROXY", default="")
 
+db = databases.Database(DATABASE_DSN)
+db_meta = sqlalchemy.MetaData()
+
 INSTALLED_APPS = (
-  "document_types",
-  "signatory_authority",
-  "section",
+    "document_types",
+    "signatory_authority",
+    "section",
 )

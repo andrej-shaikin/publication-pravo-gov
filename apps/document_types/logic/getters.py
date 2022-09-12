@@ -5,7 +5,7 @@ import httpx
 from pydantic import BaseModel, constr
 from starlette import status
 
-from utils.request import get_httpx_request_proxies
+from fastapi_utils.httpx.logic.getters import get_httpx_request_proxies
 
 
 class _DocumentTypeDto(BaseModel):

@@ -1,13 +1,14 @@
-from sqlalchemy import Column, String
+import ormar
 
-from db.models import BaseModel
+from fastapi_utils.db.models import BaseModel, BaseModelMeta
 
 
 class SignatoryAuthority(BaseModel):
     """Подписывающий орган"""
-    __tablename__ = "signatory_authorities"
+    name: str = ormar.String(max_length=512, unique=True)
 
-    name: str = Column(String(length=512), unique=True, comment="Наименование")
+    class Meta(BaseModelMeta):
+        tablename = "signatory_authorities"
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return self.name
