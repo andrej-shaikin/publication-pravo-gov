@@ -20,6 +20,3 @@ jobs:
           push: false
           target: runner
           script_stop: true
-          script: |
-            docker build -f Dockerfile .
-
