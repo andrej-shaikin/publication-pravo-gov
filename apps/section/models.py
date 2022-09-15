@@ -44,19 +44,19 @@ class NpaSubSection(BaseModel):
 
 
 class NpaDocument(BaseModel):
-    complex_name: str = ormar.String(max_length=512, unique=True)
-    name: str = ormar.String(max_length=512, unique=True)
+    complex_name: str = ormar.String(max_length=5000)
+    name: str = ormar.String(max_length=5000)
     document_date: date = ormar.Date(nullable=False)
     publish_date_short: datetime = ormar.DateTime(nullable=False)
-    document_type: DocumentType = ormar.ForeignKey(DocumentType, nullable=False, skip_reverse=False)
-    eo_number: str = ormar.String(max_length=16)
+    document_type: DocumentType = ormar.ForeignKey(DocumentType, nullable=True, skip_reverse=False)
+    eo_number: str = ormar.String(max_length=16, unique=True)
     has_pdf: bool = ormar.Boolean()
-    number: str = ormar.String(max_length=128)
+    number: str = ormar.String(max_length=128, nullable=True)
     signatory_authority: SignatoryAuthority = ormar.ForeignKey(
         SignatoryAuthority,
         related_name="npa_documents",
         index=True,
-        nullable=False,
+        nullable=True,
     )
 
     class Meta(BaseModelMeta):

@@ -40,13 +40,13 @@ async def get_npa_sections_from_source() -> Iterable[_NpaSection] | None:
             logger.exception(resp.text)
             return
         return (
-          _NpaSection(
-              code=item["Code"],
-              name=item["Name"],
-              description=item["Description"],
-              is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
-          )
-          for item in resp.json()
+            _NpaSection(
+                code=item["Code"],
+                name=item["Name"],
+                description=item["Description"],
+                is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
+            )
+            for item in resp.json()
         )
 
 
@@ -58,19 +58,19 @@ async def get_npa_section_subsection_from_source(npa_section: NpaSection) -> Ite
             logger.exception(resp.text)
             return
         return (
-          _NpaSubSection(
-              code=item["Code"],
-              name=item["Name"],
-              description=item["Description"],
-              is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
-              npa_section=_NpaSection(
-                  code=npa_section.code,
-                  name=npa_section.name,
-                  description=npa_section.description,
-                  is_agencies_of_state_authorities=npa_section.is_agencies_of_state_authorities,
-              )
-          )
-          for item in resp.json()
+            _NpaSubSection(
+                code=item["Code"],
+                name=item["Name"],
+                description=item["Description"],
+                is_agencies_of_state_authorities=item["IsAgenciesOfStateAuthorities"],
+                npa_section=_NpaSection(
+                    code=npa_section.code,
+                    name=npa_section.name,
+                    description=npa_section.description,
+                    is_agencies_of_state_authorities=npa_section.is_agencies_of_state_authorities,
+                )
+            )
+            for item in resp.json()
         )
 
 
@@ -98,7 +98,7 @@ async def get_npa_document_content(eo_number: str) -> NamedBytesIO | None:
 class _NpaDocumentDto(BaseModel):
     uuid: UUID
     eo_number: constr(max_length=16, strip_whitespace=True)
-    number: constr(max_length=128, strip_whitespace=True)
+    number: constr(max_length=128, strip_whitespace=True) | None = None
     complex_name: constr(max_length=5000, strip_whitespace=True)
     name: constr(max_length=5000, strip_whitespace=True)
     document_date: date
@@ -108,8 +108,9 @@ class _NpaDocumentDto(BaseModel):
     signatory_authority: _SignatoryAuthorityDto
 
 
-async def get_npa_documents_from_source_by_page_number(page_number: int = 1) -> Iterable[_NpaDocumentDto] | None:
+async def get_npa_documents_from_source_by_page_number() -> Iterable[_NpaDocumentDto] | None:
     """получение списка НПА из источника по номеру страницы"""
+    page_number = 1
     npa_documents = []
     while True:
         async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
@@ -137,6 +138,7 @@ async def get_npa_documents_from_source_by_page_number(page_number: int = 1) -> 
                 )
                 for document in data["Documents"]
             )
+            print(f"# {page_number}/{data['MaxPageNumber']}")
             # если обработали все страницы, выходим
             if page_number > data["MaxPageNumber"] + 1:
                 break

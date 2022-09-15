@@ -10,4 +10,4 @@ celery
 databases
 python-dateutil
 
--e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.8#egg=fastapi-utils
+-e git+http://github.com/andrej-shaikin/fastapi-utils.git@v0.0.9#egg=fastapi-utils

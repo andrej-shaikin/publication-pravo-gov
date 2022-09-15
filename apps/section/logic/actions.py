@@ -1,5 +1,11 @@
-from apps.section.logic.getters import get_npa_sections_from_source, get_npa_section_subsection_from_source
-from apps.section.models import NpaSection, NpaSubSection
+from apps.document_types.models import DocumentType
+from apps.section.logic.getters import (
+    get_npa_sections_from_source,
+    get_npa_section_subsection_from_source,
+    get_npa_documents_from_source_by_page_number
+)
+from apps.section.models import NpaSection, NpaSubSection, NpaDocument
+from apps.signatory_authority.models import SignatoryAuthority
 
 
 async def refresh_npa_sections_from_source() -> None:
@@ -23,6 +29,31 @@ async def refresh_npa_section_subsection_from_source(npa_section: NpaSection) ->
                 "name": npa_subsection.name,
                 "description": npa_subsection.description,
                 "is_agencies_of_state_authorities": npa_subsection.is_agencies_of_state_authorities,
+            }
+        )
+
+
+async def refresh_npa_documents_from_source() -> None:
+    for npa_document in await get_npa_documents_from_source_by_page_number():
+        document_type, _ = await DocumentType.objects.update_or_create(
+            uuid=npa_document.document_type.uuid,
+            defaults={"name": npa_document.document_type.name},
+        )
+        signatory_authority, _ = await SignatoryAuthority.objects.update_or_create(
+            uuid=npa_document.signatory_authority.uuid,
+            defaults={"name": npa_document.signatory_authority.name}
+        )
+        await NpaDocument.objects.update_or_create(
+            complex_name=npa_document.complex_name,
+            defaults={
+                "name": npa_document.name,
+                "document_date": npa_document.document_date,
+                "publish_date_short": npa_document.publish_date_short,
+                "eo_number": npa_document.eo_number,
+                "has_pdf": npa_document.has_pdf,
+                "number": npa_document.number,
+                "document_type": document_type,
+                "signatory_authority": signatory_authority,
             }
         )
 

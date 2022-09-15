@@ -5,7 +5,7 @@ from fastapi_utils.db.models import BaseModel, BaseModelMeta
 
 class SignatoryAuthority(BaseModel):
     """Подписывающий орган"""
-    name: str = ormar.String(max_length=512, unique=True)
+    name: str = ormar.String(max_length=512)
 
     class Meta(BaseModelMeta):
         tablename = "signatory_authorities"
