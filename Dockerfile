@@ -10,8 +10,7 @@ RUN apt update && apt install git python3-dev build-essential -y
 COPY requirements requirements
 RUN pip install --no-cache-dir -r requirements/main.txt -r requirements/dev.txt
 
-COPY .flake8 .flake8
-COPY app.py app.py
+COPY .flake8 app.py ./
 COPY apps apps
 COPY conf conf
 COPY scripts scripts

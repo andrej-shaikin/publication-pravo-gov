@@ -1,3 +1,5 @@
+import asyncio
+
 from apps.document_types.models import DocumentType
 from apps.section.logic.getters import (
     get_npa_sections_from_source,
@@ -33,8 +35,8 @@ async def refresh_npa_section_subsection_from_source(npa_section: NpaSection) ->
         )
 
 
-async def refresh_npa_documents_from_source() -> None:
-    for npa_document in await get_npa_documents_from_source_by_page_number():
+async def refresh_npa_documents_from_source(start_page: int = 1, end_page: int = 3) -> None:
+    for npa_document in await get_npa_documents_from_source_by_page_number(start_page=start_page, end_page=end_page):
         document_type, _ = await DocumentType.objects.update_or_create(
             uuid=npa_document.document_type.uuid,
             defaults={"name": npa_document.document_type.name},
@@ -52,8 +54,8 @@ async def refresh_npa_documents_from_source() -> None:
                 "eo_number": npa_document.eo_number,
                 "has_pdf": npa_document.has_pdf,
                 "number": npa_document.number,
-                "document_type": document_type,
-                "signatory_authority": signatory_authority,
+                "document_type": getattr(document_type, "pk", None),
+                "signatory_authority": getattr(signatory_authority, "pk", None),
             }
         )
 

@@ -108,13 +108,16 @@ class _NpaDocumentDto(BaseModel):
     signatory_authority: _SignatoryAuthorityDto
 
 
-async def get_npa_documents_from_source_by_page_number() -> Iterable[_NpaDocumentDto] | None:
+async def get_npa_documents_from_source_by_page_number(
+        start_page: int = 1,
+        end_page: int = 5,
+) -> Iterable[_NpaDocumentDto] | None:
     """получение списка НПА из источника по номеру страницы"""
-    page_number = 1
     npa_documents = []
-    while True:
-        async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
-            url = f"http://publication.pravo.gov.ru/api/Document/Get?RangeSize=200&CurrentPageNumber={page_number}"
+    async with httpx.AsyncClient(proxies=get_httpx_request_proxies()) as client:
+        while True:
+            # PubDateType=single&PubDateSingle=15.10.2022 - для конкретной даты
+            url = f"http://publication.pravo.gov.ru/api/Document/Get?RangeSize=200&CurrentPageNumber={start_page}"
             resp = await client.get(url)
             if resp.status_code != status.HTTP_200_OK:
                 logger.exception(resp.text)
@@ -138,12 +141,10 @@ async def get_npa_documents_from_source_by_page_number() -> Iterable[_NpaDocumen
                 )
                 for document in data["Documents"]
             )
-            print(f"# {page_number}/{data['MaxPageNumber']}")
-            # если обработали все страницы, выходим
-            if page_number > data["MaxPageNumber"] + 1:
+            if start_page > end_page:
                 break
-            logger.debug(f"Обработано {page_number}/{data['MaxPageNumber']}")
-            page_number += 1
-            await asyncio.sleep(5)
+            print(f"Обработано {start_page}/{data['MaxPageNumber']} [{end_page}]")
+            start_page += 1
+            await asyncio.sleep(15)
 
     return npa_documents
